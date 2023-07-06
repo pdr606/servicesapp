@@ -4,13 +4,16 @@ import sequelize from "../database/db";
 class User extends Model {
   public id!: number;
   public name!: string;
+  public seconName!: string;
   public email!: string;
+  public src!: string;
   public password!: string;
   public cpf!: string;
   public cep!: string;
   public telephone!: string;
   public formation!: string;
   public tags!: string[];
+  public description!: string;
 }
 
 User.init(
@@ -24,10 +27,18 @@ User.init(
       type: new DataTypes.STRING(128),
       allowNull: false,
     },
+    secondeName: {
+      type: new DataTypes.STRING(128),
+      allowNull: false,
+    },
     email: {
       type: new DataTypes.STRING(128),
       allowNull: false,
       unique: true,
+    },
+    src: {
+      type: new DataTypes.STRING(128),
+      allowNull: false,
     },
     password: {
       type: new DataTypes.STRING(128),
@@ -54,6 +65,10 @@ User.init(
       allowNull: true,
       defaultValue: [],
     },
+    description: {
+      type: new DataTypes.STRING(300),
+      allowNull: false
+    }
   },
   {
     tableName: "users",
@@ -67,7 +82,7 @@ async function syncDatabase() {
     console.log("Connect with data base");
 
     // await sequelize.sync({ force: true });
-    // console.log("Models sync with data base");
+    //  console.log("Models sync with data base");
   } catch (error) {
     console.log("Error:", error);
   }

@@ -2,13 +2,16 @@ import { Request, Response } from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
+const Tokens = require('../models/insert-token')
 const User = require("../models/user");
 
 class UserController {
   async createUser(req: Request, res: Response) {
     try {
-      const { name, email, password, cpf, cep, telephone, formation, tags } =
+      const { name, secondeName, email, password, cpf, cep, telephone, formation, tags, description } =
         req.body;
+
+      const file = req.file
 
       const userExist = await User.findOne({ where: { email: email } });
 
@@ -22,13 +25,16 @@ class UserController {
 
       const newUser = await User.create({
         name,
+        secondeName,
         email,
+        src: file?.path,
         password: passwordHash,
         cpf,
         cep,
         telephone,
         formation,
         tags,
+        description
       });
 
       res.status(200).json(newUser);
@@ -80,6 +86,69 @@ class UserController {
       res.status(500).json({ msg: "Server error" + err });
     }
   }
+
+  async userLogout(req: Request, res: Response){
+    const authHeaders = req.headers["authorization"];
+    const token = authHeaders && authHeaders.split(" ")[1];
+
+    const tokenExister = await Tokens.findOne({where :{token : token}})
+
+    if(!tokenExister){
+      await Tokens.create({
+        token
+      })
+
+      return res.status(200).json({msg: "Token save"})
+    }
+    
+  }
+
+  async editUser(req: Request, res: Response){
+    const {id, description, cep, telephone} = req.body
+    const file = req.file
+
+    try {
+      const user = await User.findOne({where: {id: id}})
+
+      if(!user){
+        return res.status(400).json({msg: "This user dont exist"})
+      }
+
+      if(file){
+        user.src = file?.path 
+      }
+      user.description = description
+      user.cep = cep
+      user.telephone = telephone
+
+      await user.save()
+
+      return res.status(200).json({msg: "Edit with success"})
+      
+    } catch (error) {
+      return res.status(500).json({msg: "Server error in edit profile", error})
+    }
+  }
+
+    async deleteUser(req: Request, res:Response){
+      const {id} = req.body
+
+      try{
+        const user = await User.findOne({where: {id: id}})
+
+        if(!user){
+          return res.status(400).json({msg: "This user doesnt exist"})
+        }
+
+        await user.destroy()
+        
+        return res.status(200).json({msg: "User deleted successfully"})
+        
+      } catch(error){
+        return res.status(500).json({msg: "Server error in deleting user", error})
+      }
+    }
+
 }
 
 module.exports = new UserController();
