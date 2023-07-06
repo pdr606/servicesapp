@@ -11,7 +11,7 @@ class UserController {
       const { name, secondeName, email, password, cpf, cep, telephone, formation, tags, description } =
         req.body;
 
-      const file = req.file
+      // const file = req.file
 
       const userExist = await User.findOne({ where: { email: email } });
 
@@ -27,7 +27,7 @@ class UserController {
         name,
         secondeName,
         email,
-        src: file?.path,
+        // src: file?.path,
         password: passwordHash,
         cpf,
         cep,

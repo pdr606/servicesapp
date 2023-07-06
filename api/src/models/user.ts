@@ -6,7 +6,7 @@ class User extends Model {
   public name!: string;
   public seconName!: string;
   public email!: string;
-  public src!: string;
+  // public src?: string;
   public password!: string;
   public cpf!: string;
   public cep!: string;
@@ -36,10 +36,10 @@ User.init(
       allowNull: false,
       unique: true,
     },
-    src: {
-      type: new DataTypes.STRING(128),
-      allowNull: false,
-    },
+    // src: {
+    //   type: new DataTypes.STRING(128),
+    //   allowNull: false,
+    // },
     password: {
       type: new DataTypes.STRING(128),
       allowNull: false,
