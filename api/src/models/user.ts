@@ -1,18 +1,15 @@
 import { Model, DataTypes } from "sequelize";
 import sequelize from "../database/db";
 
+
 class User extends Model {
   public id!: number;
+  public nick!: string;
+  public value!: number;
   public name!: string;
-  public seconName!: string;
   public email!: string;
   // public src?: string;
   public password!: string;
-  public cpf!: string;
-  public cep!: string;
-  public telephone!: string;
-  public formation!: string;
-  public tags!: string[];
   public description!: string;
 }
 
@@ -27,7 +24,11 @@ User.init(
       type: new DataTypes.STRING(128),
       allowNull: false,
     },
-    secondeName: {
+    value: {
+      type: new DataTypes.INTEGER,
+      defaultValue: 1000,
+    },
+    nick: {
       type: new DataTypes.STRING(128),
       allowNull: false,
     },
@@ -44,27 +45,6 @@ User.init(
       type: new DataTypes.STRING(128),
       allowNull: false,
     },
-    cpf: {
-      type: new DataTypes.STRING(14),
-      allowNull: false,
-    },
-    cep: {
-      type: new DataTypes.STRING(9),
-      allowNull: false,
-    },
-    telephone: {
-      type: new DataTypes.STRING(15),
-      allowNull: false,
-    },
-    formation: {
-      type: new DataTypes.STRING(128),
-      allowNull: false,
-    },
-    tags: {
-      type: DataTypes.JSON,
-      allowNull: true,
-      defaultValue: [],
-    },
     description: {
       type: new DataTypes.STRING(300),
       allowNull: false
@@ -76,18 +56,5 @@ User.init(
   }
 );
 
-async function syncDatabase() {
-  try {
-    await sequelize.authenticate();
-    console.log("Connect with data base");
-
-    // await sequelize.sync({ force: true });
-    //  console.log("Models sync with data base");
-  } catch (error) {
-    console.log("Error:", error);
-  }
-}
-
-syncDatabase();
 
 module.exports = User;

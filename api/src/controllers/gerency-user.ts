@@ -8,7 +8,7 @@ const User = require("../models/user");
 class UserController {
   async createUser(req: Request, res: Response) {
     try {
-      const { name, secondeName, email, password, cpf, cep, telephone, formation, tags, description } =
+      const { name, secondeName, email, password, description, nick } =
         req.body;
 
       // const file = req.file
@@ -26,14 +26,10 @@ class UserController {
       const newUser = await User.create({
         name,
         secondeName,
+        nick,
         email,
         // src: file?.path,
         password: passwordHash,
-        cpf,
-        cep,
-        telephone,
-        formation,
-        tags,
         description
       });
 
@@ -104,7 +100,7 @@ class UserController {
   }
 
   async editUser(req: Request, res: Response){
-    const {id, description, cep, telephone} = req.body
+    const {id, description, nick,} = req.body
     const file = req.file
 
     try {
@@ -118,8 +114,7 @@ class UserController {
         user.src = file?.path 
       }
       user.description = description
-      user.cep = cep
-      user.telephone = telephone
+      user.nick = nick
 
       await user.save()
 
@@ -140,7 +135,7 @@ class UserController {
           return res.status(400).json({msg: "This user doesnt exist"})
         }
 
-        await user.destroy()
+        await user.destroy({ cascade: true })
         
         return res.status(200).json({msg: "User deleted successfully"})
         
@@ -148,6 +143,8 @@ class UserController {
         return res.status(500).json({msg: "Server error in deleting user", error})
       }
     }
+
+     
 
 }
 
