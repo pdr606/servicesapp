@@ -1,7 +1,6 @@
 import { Model, DataTypes } from "sequelize";
 import sequelize from "../database/db";
 
-
 class User extends Model {
   public id!: number;
   public nick!: string;
@@ -25,7 +24,7 @@ User.init(
       allowNull: false,
     },
     value: {
-      type: new DataTypes.INTEGER,
+      type: new DataTypes.INTEGER(),
       defaultValue: 1000,
     },
     nick: {
@@ -47,14 +46,13 @@ User.init(
     },
     description: {
       type: new DataTypes.STRING(300),
-      allowNull: false
-    }
+      allowNull: false,
+    },
   },
   {
     tableName: "users",
     sequelize,
   }
 );
-
 
 module.exports = User;

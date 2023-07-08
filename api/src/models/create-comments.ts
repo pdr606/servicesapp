@@ -1,12 +1,12 @@
 const { Model, DataTypes } = require("sequelize");
-import sequelize from '../database/db';
-const Posts = require('./create-post.ts')
-const User = require('./user.ts');
+import sequelize from "../database/db";
+const Posts = require("./create-post.ts");
+const User = require("./user.ts");
 
 class Comments extends Model {
   public id!: number;
   public commentId!: string;
-  public userId!: number;
+  // public userId!: number;
 }
 
 Comments.init(
@@ -14,49 +14,39 @@ Comments.init(
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
-      autoIncrement: true
+      autoIncrement: true,
     },
     comment: {
       type: DataTypes.STRING,
-      allowNull: false
-     },
+      allowNull: false,
+    },
     // userId: {
     //   type: DataTypes.STRING,
     //   allowNull: false,
-    //   references :{
+    //   references: {
     //     model: User,
-    //     key: "id"
-    //   }
+    //     key: "id",
+    //   },
     // },
     // commentId: {
     //   type: DataTypes.INTEGER.UNSIGNED,
     //   allowNull: false,
     //   references: {
     //     model: Posts,
-    //     key: 'id'
-    //   }
-    // }
-   },
+    //     key: "id",
+    //   },
+    // },
+  },
   {
     tableName: "comments",
     sequelize,
   }
 );
 
+Posts.hasMany(Comments, { onDelete: "CASCADE", foreignKey: "commentId" });
+Comments.belongsTo(Posts, { foreignKey: "commentId" });
 
-
-async function syncDatabase() {
-  try {
-    await sequelize.authenticate();
-    console.log("Connected to the database");
-
-    await sequelize.sync();
-    console.log("Models synchronized with the database");
-  } catch (error) {
-    console.log("Error:", error);
-  }
-}
-
-syncDatabase();
+User.hasMany(Comments, { onDelete: "CASCADE", foreignKey: "userId" });
+Comments.belongsTo(User, { foreignKey: "userId" });
 
 module.exports = Comments;
