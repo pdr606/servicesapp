@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 const User = require("../models/user");
 const Post = require("../models/create-post");
+const Comment = require('../models/create-comments')
 
 class createPost {
   async createPost(req: Request, res: Response) {
@@ -31,24 +32,42 @@ class createPost {
 
   async getAllPosts(req: Request, res: Response) {
     try {
-      const getAllPosts = await Post.findAll();
+      const getAllPosts = await Post.findAll({
+        include: [
+          {
+            model: User,
+            as: 'users',
+            attributes: ['name']
+          }
+        ],
+        attributes: { exclude: ['userCreatePostId'] }
+      });
 
       return res.status(200).json(getAllPosts);
     } catch (error) {
-      return res.status(500).json({ msg: "Server erro to get all Users" });
+      return res.status(500).json({ msg: "Server erro to get all Users" + error });
     }
   }
 
   async getPostsOfOneUser(req: Request, res: Response) {
     const { id } = req.body;
     try {
-      const getPostsOfOneUser = await Post.findAll({ where: { userId: id } });
+      const getPostsOfOneUser = await Post.findAll({
+        where: { userCreatePostId: id },
+        include: [
+          {
+            model: User,
+            as: 'users',
+            attributes: ['name']
+          }
+        ]
+      });
 
       return res.status(200).json(getPostsOfOneUser);
     } catch (error) {
       return res
         .status(500)
-        .json({ msg: "Server erro to get info of user", id });
+        .json({ msg: "Server erro to get info of user" + error });
     }
   }
 

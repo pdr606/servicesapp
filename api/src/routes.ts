@@ -12,7 +12,7 @@ routes.post("/registro", upload.single("file"), UserController.createUser);
 routes.get("/logar", UserController.userLogin);
 routes.get("/logout", UserController.userLogout);
 routes.post("/editar-perfil", UserController.editUser);
-routes.post("/deletar-usuario", UserController.deleteUser);
+routes.delete("/deletar-usuario", UserController.deleteUser);
 
 routes.post("/criar-postagem", CreatePost.createPost);
 routes.get("/buscar-postagens", CreatePost.getAllPosts);
@@ -20,5 +20,7 @@ routes.get("/buscar-postanges-usuario-unico", CreatePost.getPostsOfOneUser);
 routes.delete("/deletar-post", CreatePost.deletePost);
 
 routes.post("/criar-comentario", CommentController.createComment);
+routes.delete('/deletar-comentario', CommentController.deleteComment)
+routes.get('/puxar-todos-comentarios', CommentController.getCommentOfUnicPost)
 
 module.exports = routes;

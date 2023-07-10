@@ -2,7 +2,7 @@ import express from "express";
 
 const routes = require("./routes");
 const app = express();
-const PORT: Number = 3020;
+const PORT: Number = 3015;
 
 require("dotenv").config();
 
